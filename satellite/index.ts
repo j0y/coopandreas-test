@@ -1,11 +1,14 @@
-import {connect} from "nats";
+import { connect } from "nats";
+
+const clientName = "a";
+const nc = await connect({ servers: "nats://localhost:4222" });
+
+nc.publish("hello", clientName);
 
 
 async function server() {
-  const nc = await connect({ servers: "nats://localhost:4222" });
-
   // Listen for requests
-  let sub = nc.subscribe("compute.sum");
+  let sub = nc.subscribe("compute." + clientName);
   const done = (async () => {
     for await (const msg of sub) {
       console.log(`${msg.string()} on subject ${msg.subject}`);
