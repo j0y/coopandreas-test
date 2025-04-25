@@ -1,4 +1,4 @@
-./.config
-./CLEO_PLUGINS
-./tsconfig.json
-./testTasks.ini
+.config
+CLEO_PLUGINS
+tsconfig.json
+testTasks.ini
