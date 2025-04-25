@@ -1,4 +1,5 @@
 import { connect } from "nats";
+import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
 
 const N_ClIENTS = 1;
 let Clients: string[] = [];
@@ -23,7 +24,7 @@ await delay(7000);
 async function basicTask() {
     for (const clientName of Clients) {
         try {
-            let response = await nc.request("compute." + clientName, JSON.stringify({ a: 5, b: 10 }), { timeout: 4000 });
+            let response = await nc.request("compute." + clientName, JSON.stringify({ x: 100, y: 100, z: 100 } as MovePlayerTaskParams), { timeout: 4000 });
             console.log("Received:", response.data.toString());
         } catch (error) {
             console.error(`Timeout or error for ${clientName}:`, error);

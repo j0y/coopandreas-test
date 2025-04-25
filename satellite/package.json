@@ -10,6 +10,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "js-ini": "^1.6.0",
     "nats": "^2.29.3"
   }
 }

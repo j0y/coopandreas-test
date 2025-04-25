@@ -17,7 +17,7 @@ while (true) {
     }
     switch (newTask) {
       case Tasks.MovePlayer: {
-        new MovePlayerTask(plc).Run()
+        new MovePlayerTask().Configure(plc).Run()
       }
       case Tasks.CheckIfPEDExists: {
 

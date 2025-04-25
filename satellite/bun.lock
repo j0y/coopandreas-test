@@ -4,6 +4,7 @@
     "": {
       "name": "satellite",
       "dependencies": {
+        "js-ini": "^1.6.0",
         "nats": "^2.29.3",
       },
       "devDependencies": {
@@ -20,6 +21,8 @@
     "@types/node": ["@types/node@22.15.2", "", { "dependencies": { "undici-types": "~6.21.0" } }, "sha512-uKXqKN9beGoMdBfcaTY1ecwz6ctxuJAcUlwE55938g0ZJ8lRxwAZqRz2AJ4pzpt5dHdTPMB863UZ0ESiFUcP7A=="],
 
     "bun-types": ["bun-types@1.2.10", "", { "dependencies": { "@types/node": "*" } }, "sha512-b5ITZMnVdf3m1gMvJHG+gIfeJHiQPJak0f7925Hxu6ZN5VKA8AGy4GZ4lM+Xkn6jtWxg5S3ldWvfmXdvnkp3GQ=="],
+
+    "js-ini": ["js-ini@1.6.0", "", {}, "sha512-9Vx+NVkMRNY4i7pLLIGdXIQbP1iwB3fP2IG1zMCgeUUvR1ODmTKa33eR/J9FHoorNsfoJr9/2SVqeSKLwPD9Nw=="],
 
     "nats": ["nats@2.29.3", "", { "dependencies": { "nkeys.js": "1.1.0" } }, "sha512-tOQCRCwC74DgBTk4pWZ9V45sk4d7peoE2njVprMRCBXrhJ5q5cYM7i6W+Uvw2qUrcfOSnuisrX7bEx3b3Wx4QA=="],
 
