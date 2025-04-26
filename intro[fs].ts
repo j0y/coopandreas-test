@@ -21,9 +21,11 @@ while (true) {
     switch (newTask) {
       case Tasks.MovePlayer: {
         new MovePlayerTask().Configure(iniFilename, plc).Run()
+        break;
       }
       case Tasks.SpawnPED: {
         new SpawnPEDTask().Configure(iniFilename).Run();
+        break;
       }
     }
     markTaskDone(iniFilename);
