@@ -1,5 +1,5 @@
 import { teleport } from "./functions";
-import { iniTaskFile, Params, Tasks, TaskSection } from "./tasks";
+import { Params, Tasks, TaskSection } from "./tasks";
 
 export interface MovePlayerTaskParams {
     x: float;
@@ -13,7 +13,7 @@ export class MovePlayerTask {
     y: float = 0;
     z: float = 0;
 
-    Configure(plc: Char) {
+    Configure(iniTaskFile, plc: Char) {
         this.plc = plc;
         this.x = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.X);
         this.y = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.Y);
@@ -23,8 +23,8 @@ export class MovePlayerTask {
     Run() {
         teleport(this.plc, this.plc, this.x, this.y, this.z, this.plc.getHeading(), 0);
     }
-    async Setup(writer, param: MovePlayerTaskParams) {
-        return writer("../" + iniTaskFile, {
+    Setup(param: MovePlayerTaskParams) {
+        return  {
             CURRENT: {
                 Task: Tasks.MovePlayer,
                 [Params.X]: param.x,
@@ -34,6 +34,6 @@ export class MovePlayerTask {
             RESULT: {
                 Done: 0
             }
-        }, { nothrow: true })
+        }
     }
 }

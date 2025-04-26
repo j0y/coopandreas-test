@@ -1,12 +1,11 @@
 import { connect } from "nats";
 
 import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
-import { iniTaskFile } from "../includes/tasks";
 import { readIniFile } from "./tools/read-ini-file";
 import { writeIniFile } from "./tools/write-ini-file";
 
-
-const clientName = "a";
+const clientName = await getLastIniFilename();
+const iniTaskFile = `../${clientName}.ini`
 const nc = await connect({ servers: "nats://localhost:4222" });
 
 nc.publish("hello", clientName);
@@ -20,10 +19,10 @@ async function worker() {
       console.log(`${msg.string()} on subject ${msg.subject}`);
       let args: MovePlayerTaskParams = JSON.parse(msg.data.toString());
       const task = new MovePlayerTask()
-      await task.Setup(writeIniFile, args)
+      await writeIniFile(iniTaskFile, task.Setup(args), {})
       let finished = false
       while (!finished) {
-        const output = await readIniFile("../" + iniTaskFile, { nothrow: true })
+        const output = await readIniFile(iniTaskFile, { nothrow: true })
         finished = output?.RESULT?.Done === "1"
       }
       msg.respond(Buffer.from("1"));
@@ -35,3 +34,19 @@ async function worker() {
 }
 
 worker();
+
+async function getLastIniFilename() {
+  const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+
+  for (let i = 0; i < alphabet.length; i++) {
+    const filename = `../${alphabet[i]}.ini`;
+
+    const file = Bun.file(filename);
+    const exists = await file.exists();
+    if (!exists && i > 0) {
+      return alphabet[i - 1]
+    }
+  }
+
+  return "last"; // not ideal
+}
