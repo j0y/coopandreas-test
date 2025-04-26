@@ -18,7 +18,7 @@ Else
     MsgBox(0, "Error", "No matching window found.")
 EndIf
 
-Sleep(100)
+;Sleep(100)
 MouseClick("left", 900, 450)
 MouseClick("left", 550, 350)
 
@@ -27,7 +27,7 @@ Sleep(4000)
 ; Retrieve the position as well as the height and width of the Notepad window. We will use this when we have to move the window back to the original position.
 Local $aPos = WinGetPos($hSAWindow)
 
-Local $SACount = GetWindowsCount("CoopAndreas")
+Local $SACount = GetWindowsCount("CoopAndreas |")
 Local $newWindowPos = GetNewWindowPosition($SACount)
 ;Local $xpos =  $SACount * 400
 ; MsgBox(0, "Error", $xpos)

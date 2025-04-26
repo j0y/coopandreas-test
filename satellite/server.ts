@@ -39,16 +39,27 @@ const commandToString = (data: Command): string => {
     return JSON.stringify(data)
 }
 
-async function basicTask() {
+async function MoveAllPlayers(x: number, y: number) {
     for (const [index, clientName] of Clients.entries()) {
         try {
-            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: 50 + index * 2, y: 50 + index * 2, z: 0 } }), { timeout: 4000 });
+            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: x + index * 2, y: y + index * 2, z: 1 } }), { timeout: 4000 });
             console.log("Received:", response.data.toString());
         } catch (error) {
             console.error(`Timeout or error for ${clientName}:`, error);
         }
     }
 }
+async function SpawnPED(clientName: string, x: number, y: number) {
+    try {
+        let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.SpawnPED, params: { x, y, z: 1 } }), { timeout: 4000 });
+        console.log("Received:", response.data.toString());
+    } catch (error) {
+        console.error(`Timeout or error for ${clientName}:`, error);
+    }
+}
 
-await basicTask();
+await MoveAllPlayers(50, 50);
+if (Clients[0]) {
+    await SpawnPED(Clients[0], 50, 48);
+}
 await nc.close();

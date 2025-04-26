@@ -4,6 +4,7 @@ export const ResultSection = 'RESULT'
 export enum Tasks {
     None = "None",
     MovePlayer = "MovePlayer",
+    SpawnPED = "SpawnPED",
     CheckIfPEDExists = "CheckIfPEDExists",
 }
 

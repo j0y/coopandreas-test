@@ -1,6 +1,7 @@
 import { connect } from "nats";
 
-import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
+import { MovePlayerTask } from "../includes/MovePlayerTask"
+import { SpawnPEDTask } from "../includes/SpawnPEDTask"
 import { readIniFileWithAccessCheck } from "./tools/read-ini-file";
 import { writeIniFile } from "./tools/write-ini-file";
 import { Tasks } from "../includes/tasks";
@@ -27,6 +28,8 @@ async function worker() {
       let task;
       if (args.task === Tasks.MovePlayer) {
         task = new MovePlayerTask()
+      } else if (args.task === Tasks.SpawnPED) {
+        task = new SpawnPEDTask()
       } else {
         continue;
       }

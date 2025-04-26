@@ -1,4 +1,5 @@
 import { MovePlayerTask } from './includes/MovePlayerTask.ts';
+import { SpawnPEDTask } from './includes/SpawnPEDTask.ts';
 import { Tasks, getCurrentTask, markTaskDone, isTaskDone, claimFreeIniFile } from './includes/tasks.ts';
 log("Hello world");
 
@@ -21,8 +22,8 @@ while (true) {
       case Tasks.MovePlayer: {
         new MovePlayerTask().Configure(iniFilename, plc).Run()
       }
-      case Tasks.CheckIfPEDExists: {
-
+      case Tasks.SpawnPED: {
+        new SpawnPEDTask().Configure(iniFilename).Run();
       }
     }
     markTaskDone(iniFilename);
