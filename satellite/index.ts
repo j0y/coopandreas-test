@@ -1,9 +1,10 @@
 import { connect } from "nats";
 
 import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
-import { readIniFile, readIniFileWithAccessCheck } from "./tools/read-ini-file";
+import { readIniFileWithAccessCheck } from "./tools/read-ini-file";
 import { writeIniFile } from "./tools/write-ini-file";
-import { promises as fs } from 'fs';
+import { Tasks } from "../includes/tasks";
+import type { Command } from "./server";
 
 const clientName = await getLastIniFilename();
 const iniTaskFile = `../${clientName}.ini`
@@ -18,9 +19,14 @@ async function worker() {
   const done = (async () => {
     for await (const msg of sub) {
       console.log(`${msg.string()} on subject ${msg.subject}`);
-      let args: MovePlayerTaskParams = JSON.parse(msg.data.toString());
-      const task = new MovePlayerTask()
-      await writeIniFile(iniTaskFile, task.Setup(args), {})
+      let args: Command = JSON.parse(msg.data.toString());
+      let task;
+      if (args.task === Tasks.MovePlayer) {
+        task = new MovePlayerTask()
+      } else {
+        continue;
+      }
+      await writeIniFile(iniTaskFile, task.Setup(args.params), {})
       let finished = false
       while (!finished) {
         const output = await readIniFileWithAccessCheck(iniTaskFile, { nothrow: true })

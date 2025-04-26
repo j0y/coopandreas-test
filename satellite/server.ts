@@ -1,5 +1,11 @@
 import { connect } from "nats";
-import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
+import { type MovePlayerTaskParams } from "../includes/MovePlayerTask"
+import { Tasks } from "../includes/tasks";
+
+export interface Command {
+    task: Tasks,
+    params: MovePlayerTaskParams,
+}
 
 const N_ClIENTS = 2;
 let Clients: string[] = [];
@@ -25,7 +31,7 @@ await delay(1000);
 async function basicTask() {
     for (const [index, clientName] of Clients.entries()) {
         try {
-            let response = await nc.request("compute." + clientName, JSON.stringify({ x: 50 + index * 2, y: 50 + index * 2, z: 10 } as MovePlayerTaskParams), { timeout: 4000 });
+            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: 50 + index * 2, y: 50 + index * 2, z: 10 } }), { timeout: 4000 });
             console.log("Received:", response.data.toString());
         } catch (error) {
             console.error(`Timeout or error for ${clientName}:`, error);
@@ -35,3 +41,7 @@ async function basicTask() {
 
 await basicTask();
 await nc.close();
+
+const commandToString = (data: Command): string => {
+    return JSON.stringify(data)
+}
