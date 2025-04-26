@@ -10,8 +10,12 @@ const clientName = await getLastIniFilename();
 const iniTaskFile = `../${clientName}.ini`
 const nc = await connect({ servers: "nats://localhost:4222" });
 
-nc.publish("hello", clientName);
 
+// Broadcast client name
+const publishMessage = () => {
+  nc.publish("hello", clientName);
+};
+const interval = setInterval(publishMessage, 1000);
 
 async function worker() {
   // Listen for requests

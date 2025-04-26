@@ -7,19 +7,25 @@ export interface Command {
     params: MovePlayerTaskParams,
 }
 
-const N_ClIENTS = 2;
 let Clients: string[] = [];
 
 const nc = await connect({ servers: "nats://localhost:4222" });
 
 let sub = nc.subscribe("hello");
+const timeout = setTimeout(async () => {
+    sub.unsubscribe();
+    console.log("Collected clients:", Clients);
+}, 2000); // Stop collecting messages after 5 seconds
+
+console.log("Listening for clients...");
+
 for await (const msg of sub) {
     const name = msg.data.toString()
+    if (Clients.includes(name)) {
+        continue;
+    }
     console.log(`connected ${name}`);
     Clients = [...Clients, name]
-    if (Clients.length === N_ClIENTS) {
-        break;
-    }
 }
 
 console.log(`start`);
@@ -28,10 +34,15 @@ const delay = (durationMs: number) => {
 }
 await delay(1000);
 
+
+const commandToString = (data: Command): string => {
+    return JSON.stringify(data)
+}
+
 async function basicTask() {
     for (const [index, clientName] of Clients.entries()) {
         try {
-            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: 50 + index * 2, y: 50 + index * 2, z: 10 } }), { timeout: 4000 });
+            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: 50 + index * 2, y: 50 + index * 2, z: 0 } }), { timeout: 4000 });
             console.log("Received:", response.data.toString());
         } catch (error) {
             console.error(`Timeout or error for ${clientName}:`, error);
@@ -41,7 +52,3 @@ async function basicTask() {
 
 await basicTask();
 await nc.close();
-
-const commandToString = (data: Command): string => {
-    return JSON.stringify(data)
-}
