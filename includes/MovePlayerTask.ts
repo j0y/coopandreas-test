@@ -1,4 +1,3 @@
-import { teleport } from "./functions";
 import { Params, Tasks, TaskSection } from "./tasks";
 
 export interface MovePlayerTaskParams {
@@ -21,10 +20,11 @@ export class MovePlayerTask {
         return this;
     }
     Run() {
-        teleport(this.plc, this.plc, this.x, this.y, this.z, this.plc.getHeading(), 0);
+        let ground = World.GetGroundZFor3DCoord(this.x, this.y, this.z);
+        teleport(this.plc, this.plc, this.x, this.y, ground, this.plc.getHeading(), 0);
     }
     Setup(param: MovePlayerTaskParams) {
-        return  {
+        return {
             CURRENT: {
                 Task: Tasks.MovePlayer,
                 [Params.X]: param.x,
@@ -36,4 +36,21 @@ export class MovePlayerTask {
             }
         }
     }
+}
+
+export function teleport(plc: Char, char: Char, x: float, y: float, z: float, heading: float, interior: int = 0, loadScene: boolean = true) {
+    if (loadScene) {
+        Streaming.RequestCollision(x, y);
+        Streaming.LoadScene(x, y, z);
+    }
+
+    if (!char.isInAnyCar()) {
+        char.setCoordinates(x, y, z).setHeading(heading);
+    } else {
+        char.storeCarIsInNoSave().setCoordinates(x, y, z).setHeading(heading).setAreaVisible(interior);
+    }
+
+    char.setAreaVisible(interior);
+
+    if (char === plc) Camera.RestoreJumpcut();
 }
