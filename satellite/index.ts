@@ -1,8 +1,9 @@
 import { connect } from "nats";
 
 import { MovePlayerTask, type MovePlayerTaskParams } from "../includes/MovePlayerTask"
-import { readIniFile } from "./tools/read-ini-file";
+import { readIniFile, readIniFileWithAccessCheck } from "./tools/read-ini-file";
 import { writeIniFile } from "./tools/write-ini-file";
+import { promises as fs } from 'fs';
 
 const clientName = await getLastIniFilename();
 const iniTaskFile = `../${clientName}.ini`
@@ -22,15 +23,15 @@ async function worker() {
       await writeIniFile(iniTaskFile, task.Setup(args), {})
       let finished = false
       while (!finished) {
-        const output = await readIniFile(iniTaskFile, { nothrow: true })
-        finished = output?.RESULT?.Done === "1"
+        const output = await readIniFileWithAccessCheck(iniTaskFile, { nothrow: true })
+        finished = output?.RESULT?.Done === 1
       }
       msg.respond(Buffer.from("1"));
     }
   })()
 
 
-  console.log("Worker is running...");
+  console.log(`Worker ${clientName} is running...`);
 }
 
 worker();

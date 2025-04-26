@@ -16,10 +16,11 @@ for await (const msg of sub) {
     }
 }
 
+console.log(`start`);
 const delay = (durationMs: number) => {
     return new Promise(resolve => setTimeout(resolve, durationMs));
 }
-await delay(7000);
+await delay(1000);
 
 async function basicTask() {
     for (const clientName of Clients) {
