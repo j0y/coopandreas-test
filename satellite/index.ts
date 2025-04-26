@@ -29,7 +29,7 @@ async function worker() {
       await writeIniFile(iniTaskFile, task.Setup(args.params), {})
       let finished = false
       while (!finished) {
-        const output = await readIniFileWithAccessCheck(iniTaskFile, { nothrow: true })
+        const output = await readIniFileWithAccessCheck(iniTaskFile, { nothrow: true }) as { RESULT?: { Done?: number } }
         finished = output?.RESULT?.Done === 1
       }
       msg.respond(Buffer.from("1"));
