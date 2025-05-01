@@ -1,10 +1,12 @@
 import { connect } from "nats";
 import { type MovePlayerTaskParams } from "../includes/MovePlayerTask"
 import { Tasks } from "../includes/tasks";
+import { arrangeInACircle } from "./server_tools/circle";
+import type { SpawnPEDTaskParams } from "../includes/SpawnPEDTask";
 
 export interface Command {
     task: Tasks,
-    params: MovePlayerTaskParams,
+    params: MovePlayerTaskParams | SpawnPEDTaskParams,
 }
 
 let Clients: string[] = [];
@@ -40,9 +42,10 @@ const commandToString = (data: Command): string => {
 }
 
 async function MoveAllPlayers(x: number, y: number) {
+    const placements = arrangeInACircle(x,y, 5, Clients.length)
     for (const [index, clientName] of Clients.entries()) {
         try {
-            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: x + index * 2, y: y + index * 2, z: 1 } }), { timeout: 4000 });
+            let response = await nc.request("compute." + clientName, commandToString({ task: Tasks.MovePlayer, params: { x: placements[index]!.x, y: placements[index]!.y, z: 5, a: placements[index]!.angle } }), { timeout: 4000 });
             console.log("Received:", response.data.toString());
         } catch (error) {
             console.error(`Timeout or error for ${clientName}:`, error);
@@ -60,6 +63,6 @@ async function SpawnPED(clientName: string, x: number, y: number) {
 
 await MoveAllPlayers(50, 50);
 if (Clients[0]) {
-    await SpawnPED(Clients[0], 50, 48);
+    await SpawnPED(Clients[0], 50, 50);
 }
 await nc.close();

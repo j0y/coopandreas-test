@@ -4,6 +4,7 @@ export interface MovePlayerTaskParams {
     x: float;
     y: float;
     z: float;
+    a: float;
 }
 
 export class MovePlayerTask {
@@ -11,17 +12,19 @@ export class MovePlayerTask {
     x: float = 0;
     y: float = 0;
     z: float = 0;
+    a: float = 0;
 
     Configure(iniTaskFile, plc: Char) {
         this.plc = plc;
         this.x = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.X);
         this.y = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.Y);
         this.z = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.Z);
+        this.a = IniFile.ReadFloat(iniTaskFile, TaskSection, Params.A);
         return this;
     }
     Run() {
-        let ground = World.GetGroundZFor3DCoord(this.x, this.y, this.z);
-        teleport(this.plc, this.plc, this.x, this.y, ground, this.plc.getHeading(), 0);
+        //let ground = World.GetGroundZFor3DCoord(this.x, this.y, this.z);
+        teleport(this.plc, this.plc, this.x, this.y, this.z, this.a, 0);
     }
     Setup(param: MovePlayerTaskParams) {
         return {
@@ -30,6 +33,7 @@ export class MovePlayerTask {
                 [Params.X]: param.x,
                 [Params.Y]: param.y,
                 [Params.Z]: param.z,
+                [Params.A]: param.a,
             },
             RESULT: {
                 Done: 0

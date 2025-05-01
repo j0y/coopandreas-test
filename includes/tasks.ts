@@ -14,6 +14,7 @@ export enum Params {
     X = 'X',
     Y = "Y",
     Z = "Z",
+    A = "A",
 }
 
 export function claimFreeIniFile(): string {
