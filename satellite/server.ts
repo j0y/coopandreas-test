@@ -63,6 +63,7 @@ async function SpawnPED(clientName: string, x: number, y: number) {
 
 await MoveAllPlayers(50, 50);
 if (Clients[0]) {
+    console.log("spwaning from client:", Clients[0]);
     await SpawnPED(Clients[0], 50, 50);
 }
 await nc.close();
